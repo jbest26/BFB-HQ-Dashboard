@@ -211,6 +211,18 @@ ul{list-style:none}
 .goal-area{border-left:3px solid var(--accent);padding:.75rem 1rem;border-radius:0 var(--radius-sm) var(--radius-sm) 0;background:var(--bg-raised);margin-bottom:.75rem}
 .goal-area-title{font-weight:600;font-size:.85rem;margin-bottom:.5rem}
 
+/* ─── FLOATING ACTION BUTTON ─────────────────────── */
+.fab{position:fixed;bottom:1.75rem;right:1.75rem;width:52px;height:52px;border-radius:50%;background:var(--accent);border:none;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center;z-index:50;transition:transform .15s,box-shadow .15s}
+.fab:hover{transform:scale(1.08);box-shadow:0 6px 24px rgba(0,0,0,.28)}
+.fab svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2.4;stroke-linecap:round}
+
+/* ─── MIC BUTTON ─────────────────────────────────── */
+.mic-btn{width:34px;height:34px;min-width:34px;border-radius:50%;background:var(--bg-raised);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-2);transition:all .15s;flex-shrink:0;padding:0}
+.mic-btn:hover{background:var(--accent-bg);color:var(--accent);border-color:var(--accent)}
+.mic-btn.listening{background:var(--intensity-bg);color:var(--intensity);border-color:var(--intensity);animation:mic-pulse 1s infinite}
+.mic-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+@keyframes mic-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.65;transform:scale(1.1)}}
+
 /* ─── MISC ───────────────────────────────────────── */
 .divider{height:1px;background:var(--border);margin:1rem 0}
 .empty{color:var(--text-3);font-size:.82rem;padding:.75rem 0;text-align:center;font-style:italic}
@@ -610,6 +622,11 @@ ul{list-style:none}
   </div>
 </div>
 
+<!-- FLOATING QUICK-ADD BUTTON -->
+<button class="fab" onclick="openQuickAdd()" title="Quick add task or note">
+  <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+</button>
+
 <div id="toast"></div>
 
 <!-- PASSWORD GATE -->
@@ -825,7 +842,8 @@ function renderToday() {
     <div class="priority-item">
       <div class="priority-num">${i+1}</div>
       <span class="priority-area-label">${p.area}</span>
-      <input value="${p.val||''}" placeholder="Today's focus..." onchange="savePriority(${i},this.value)" />
+      <input id="pri-input-${i}" value="${p.val||''}" placeholder="Today's focus..." onchange="savePriority(${i},this.value)" />
+      <button class="mic-btn" onclick="startVoice('pri-input-${i}',this);this.closest('.priority-item').querySelector('input').onchange=()=>savePriority(${i},document.getElementById('pri-input-${i}').value)" title="Speak your priority">${micSVG()}</button>
     </div>`).join('');
 
   // Habits
@@ -1115,7 +1133,10 @@ function deleteKanban(id) {
 function openAddBakeryTask() {
   showModal(`
     <div class="card-title mb-2">Add Bakery Task</div>
-    <input id="new-task-text" placeholder="Task description..." style="margin-bottom:.75rem">
+    <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.75rem">
+      <input id="new-task-text" placeholder="Task description..." style="flex:1" onkeydown="if(event.key==='Enter') confirmAddBakeryTask()">
+      <button class="mic-btn" onclick="startVoice('new-task-text',this)" title="Speak your task">${micSVG()}</button>
+    </div>
     <select id="new-task-col" style="margin-bottom:1rem">
       <option value="todo">To-Do</option>
       <option value="inprogress">In Progress</option>
@@ -1282,11 +1303,12 @@ function renderRecurring() {
       <span style="font-size:.68rem;font-weight:600;text-transform:uppercase;color:${freqColor[t.freq]||'var(--text-3)'};margin-left:auto;white-space:nowrap">${t.freq}</span>
     </div>`).join('')||'<div class="empty">No tasks yet.</div>';
   el.innerHTML+=`<div class="add-row mt-2">
-    <input id="new-recurring-text" placeholder="New task...">
+    <input id="new-recurring-text" placeholder="New task — type or tap mic..." onkeydown="if(event.key==='Enter') addRecurringTask()">
+    <button class="mic-btn" onclick="startVoice('new-recurring-text',this)" title="Speak your task">${micSVG()}</button>
     <select id="new-recurring-freq" style="width:auto;flex-shrink:0">
       <option value="daily">Daily</option><option value="weekly" selected>Weekly</option><option value="monthly">Monthly</option>
     </select>
-    <button class="btn btn-primary btn-sm" onclick="addRecurringTask()">+</button>
+    <button class="btn btn-primary btn-sm" onclick="addRecurringTask()">Add</button>
   </div>`;
 }
 function toggleRecurring(id, checked) {
@@ -1384,6 +1406,125 @@ function exportData() {
   a.download=`bfbhq-backup-${today()}.json`;
   a.click();
   toast('Data exported.');
+}
+
+// ════════════════════════════════════════════════════
+//  VOICE INPUT  (Web Speech API — no external service)
+// ════════════════════════════════════════════════════
+
+const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+let _activeRec = null;
+
+function micSVG() {
+  return `<svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>`;
+}
+
+function startVoice(targetId, btnEl) {
+  if(!SpeechRec) { toast('Voice input not supported in this browser.'); return; }
+
+  // Toggle off if already listening on this button
+  if(btnEl.classList.contains('listening')) {
+    if(_activeRec) { _activeRec.abort(); _activeRec = null; }
+    btnEl.classList.remove('listening');
+    return;
+  }
+
+  // Stop any other active recognition
+  if(_activeRec) { _activeRec.abort(); _activeRec = null; }
+
+  const rec = new SpeechRec();
+  rec.lang = 'en-US';
+  rec.interimResults = false;
+  rec.maxAlternatives = 1;
+  _activeRec = rec;
+  btnEl.classList.add('listening');
+
+  rec.onresult = e => {
+    const t = e.results[0][0].transcript;
+    const el = document.getElementById(targetId);
+    if(el) { el.value = t; el.dispatchEvent(new Event('input')); el.focus(); }
+    btnEl.classList.remove('listening');
+    _activeRec = null;
+  };
+  rec.onerror = e => {
+    btnEl.classList.remove('listening');
+    _activeRec = null;
+    if(e.error !== 'aborted') toast('Voice error: ' + e.error);
+  };
+  rec.onend = () => { btnEl.classList.remove('listening'); _activeRec = null; };
+  rec.start();
+}
+
+// ════════════════════════════════════════════════════
+//  QUICK-ADD  (floating + button → modal)
+// ════════════════════════════════════════════════════
+
+function openQuickAdd() {
+  showModal(`
+    <div style="margin-bottom:1rem">
+      <div style="font-family:var(--font-display);font-size:1.15rem;font-weight:700">Quick Add</div>
+      <div style="font-size:.8rem;color:var(--text-2);margin-top:.15rem">Type or speak — add to any area instantly</div>
+    </div>
+
+    <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:1rem">
+      <input id="qa-text" placeholder="What needs doing?" style="flex:1;font-size:.95rem;padding:.55rem .75rem"
+        onkeydown="if(event.key==='Enter') confirmQuickAdd()">
+      <button class="mic-btn" id="qa-mic" onclick="startVoice('qa-text',this)" title="Speak your task">${micSVG()}</button>
+    </div>
+
+    <div style="margin-bottom:1rem">
+      <div class="section-label" style="margin-bottom:.5rem">Add to</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.4rem" id="qa-area-picker">
+        ${[
+          {v:'life',    label:'Life tasks'},
+          {v:'bakery',  label:'Bakery board'},
+          {v:'pt',      label:'Training priority (today)'},
+          {v:'pb',      label:'Bakery priority (today)'},
+          {v:'pl',      label:'Life priority (today)'},
+        ].map((o,i)=>`
+          <button class="qa-area-pill${i===0?' selected':''}" data-val="${o.v}"
+            onclick="document.querySelectorAll('.qa-area-pill').forEach(b=>b.classList.remove('selected'));this.classList.add('selected')">
+            ${o.label}
+          </button>`).join('')}
+      </div>
+    </div>
+
+    <div style="display:flex;gap:.5rem">
+      <button class="btn btn-primary" onclick="confirmQuickAdd()" style="flex:1;justify-content:center">Add</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>`);
+  setTimeout(() => document.getElementById('qa-text')?.focus(), 120);
+}
+
+function confirmQuickAdd() {
+  const text = (document.getElementById('qa-text')?.value || '').trim();
+  if(!text) { document.getElementById('qa-text')?.focus(); return; }
+
+  const sel = document.querySelector('.qa-area-pill.selected');
+  const area = sel ? sel.dataset.val : 'life';
+
+  if(area === 'life') {
+    const tasks = getState('recurring_tasks', RECURRING_DEFAULT);
+    tasks.push({id:uid(), text, freq:'weekly', done:false});
+    save('recurring_tasks', tasks);
+    toast('Added to Life tasks.');
+  } else if(area === 'bakery') {
+    const tasks = getState('bakery_tasks', BAKERY_TASKS_DEFAULT);
+    tasks.push({id:uid(), text, col:'todo'});
+    save('bakery_tasks', tasks);
+    toast('Added to Bakery board.');
+  } else if(area === 'pt' || area === 'pb' || area === 'pl') {
+    const map = {pt:0, pb:1, pl:2};
+    const priorities = getState('priorities_'+today(), [{area:'Training',val:''},{area:'Bakery',val:''},{area:'Life',val:''}]);
+    priorities[map[area]].val = text;
+    save('priorities_'+today(), priorities);
+    toast('Today\'s priority set.');
+  }
+
+  closeModal();
+  if(activeTab === 'today')   renderToday();
+  if(activeTab === 'bakery')  renderBakery();
+  if(activeTab === 'life')    renderLife();
 }
 
 // ════════════════════════════════════════════════════
