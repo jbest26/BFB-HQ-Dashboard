@@ -1,0 +1,1720 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BFB HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ─── TOKENS ─────────────────────────────────────── */
+:root {
+  --bg:          #f5f1eb;
+  --bg-card:     #ffffff;
+  --bg-raised:   #eee9e1;
+  --text:        #1a1814;
+  --text-2:      #5a5648;
+  --text-3:      #9a9282;
+  --border:      #ddd8cf;
+  --accent:      #244d24;
+  --accent-2:    #3a7a3a;
+  --accent-bg:   #eaf2ea;
+  --warm:        #b86a1e;
+  --warm-bg:     #fdf3e8;
+  --zone2:       #1a6b5a;
+  --zone2-bg:    #e6f4f1;
+  --intensity:   #c45020;
+  --intensity-bg:#fbeee8;
+  --strength:    #2a4f8a;
+  --strength-bg: #eaeffa;
+  --cycling:     #9a6010;
+  --cycling-bg:  #fdf5e0;
+  --soccer:      #5a2a8a;
+  --soccer-bg:   #f2eafa;
+  --rest:        #6a6a60;
+  --rest-bg:     #f0f0ee;
+  --radius:      10px;
+  --radius-sm:   6px;
+  --shadow:      0 1px 3px rgba(0,0,0,.06), 0 2px 8px rgba(0,0,0,.04);
+  --shadow-md:   0 4px 16px rgba(0,0,0,.08);
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+  --nav-h:       56px;
+}
+[data-theme="dark"] {
+  --bg:         #0d120d;
+  --bg-card:    #151e15;
+  --bg-raised:  #1c281c;
+  --text:       #e4ede0;
+  --text-2:     #8aaa84;
+  --text-3:     #5a7054;
+  --border:     #253025;
+  --accent:     #5aaa5a;
+  --accent-2:   #7aca7a;
+  --accent-bg:  #182218;
+  --warm:       #e08030;
+  --warm-bg:    #1e1508;
+  --zone2:      #2aaa8a;
+  --zone2-bg:   #0d1e1a;
+  --intensity:  #e07050;
+  --intensity-bg:#1e1008;
+  --strength:   #5a80d0;
+  --strength-bg:#0d1428;
+  --cycling:    #c09030;
+  --cycling-bg: #1a1600;
+  --soccer:     #9060d0;
+  --soccer-bg:  #160d28;
+  --rest:       #808878;
+  --rest-bg:    #181c18;
+  --shadow:     0 1px 3px rgba(0,0,0,.3), 0 2px 8px rgba(0,0,0,.2);
+  --shadow-md:  0 4px 16px rgba(0,0,0,.4);
+}
+
+/* ─── RESET ──────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px;-webkit-text-size-adjust:100%}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh;transition:background .2s,color .2s}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+input,textarea,select{font-family:inherit;font-size:inherit;color:var(--text);background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.45rem .7rem;width:100%;outline:none;transition:border-color .15s}
+input:focus,textarea:focus{border-color:var(--accent-2)}
+textarea{resize:vertical;min-height:80px}
+a{color:var(--accent-2);text-decoration:none}
+ul{list-style:none}
+
+/* ─── NAV ────────────────────────────────────────── */
+#nav{position:sticky;top:0;z-index:100;background:var(--bg-card);border-bottom:1px solid var(--border);height:var(--nav-h);display:flex;align-items:center;gap:0;padding:0 1rem;box-shadow:var(--shadow)}
+.nav-brand{font-family:var(--font-display);font-weight:700;font-size:1.1rem;color:var(--accent);letter-spacing:-.01em;white-space:nowrap;margin-right:1.5rem}
+.nav-brand span{font-style:italic;font-weight:400;color:var(--text-2);font-size:.8rem;display:block;line-height:1}
+.nav-tabs{display:flex;gap:.15rem;overflow-x:auto;scrollbar-width:none;flex:1}
+.nav-tabs::-webkit-scrollbar{display:none}
+.tab-btn{padding:.45rem .85rem;border-radius:var(--radius-sm);font-size:.8rem;font-weight:500;color:var(--text-2);white-space:nowrap;transition:all .15s;letter-spacing:.01em}
+.tab-btn:hover{background:var(--bg-raised);color:var(--text)}
+.tab-btn.active{background:var(--accent-bg);color:var(--accent);font-weight:600}
+.nav-right{display:flex;align-items:center;gap:.5rem;margin-left:.75rem}
+.icon-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);color:var(--text-2);transition:all .15s;flex-shrink:0}
+.icon-btn:hover{background:var(--bg-raised);color:var(--text)}
+.icon-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ─── LAYOUT ─────────────────────────────────────── */
+.tab-panel{display:none;padding:1.5rem;max-width:1100px;margin:0 auto;animation:fadeIn .2s ease}
+.tab-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.page-header{margin-bottom:1.5rem}
+.page-header h1{font-family:var(--font-display);font-size:1.6rem;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.page-header p{color:var(--text-2);font-size:.875rem;margin-top:.25rem}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.grid-auto{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+@media(max-width:700px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+/* ─── CARDS ──────────────────────────────────────── */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem;box-shadow:var(--shadow)}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem}
+.card-title{font-family:var(--font-display);font-weight:600;font-size:1rem;letter-spacing:-.01em}
+.card-subtitle{font-size:.75rem;color:var(--text-2);text-transform:uppercase;letter-spacing:.06em;font-weight:500}
+.card-meta{font-size:.75rem;color:var(--text-3)}
+
+/* ─── SECTION LABELS ─────────────────────────────── */
+.section-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;font-weight:600;color:var(--text-3);margin-bottom:.5rem}
+
+/* ─── BADGES / PILLS ─────────────────────────────── */
+.badge{display:inline-flex;align-items:center;padding:.2rem .55rem;border-radius:20px;font-size:.72rem;font-weight:600;letter-spacing:.02em}
+.badge-accent{background:var(--accent-bg);color:var(--accent)}
+.badge-warm{background:var(--warm-bg);color:var(--warm)}
+.badge-zone2{background:var(--zone2-bg);color:var(--zone2)}
+.badge-strength{background:var(--strength-bg);color:var(--strength)}
+.badge-intensity{background:var(--intensity-bg);color:var(--intensity)}
+.badge-cycling{background:var(--cycling-bg);color:var(--cycling)}
+.badge-soccer{background:var(--soccer-bg);color:var(--soccer)}
+.badge-rest{background:var(--rest-bg);color:var(--rest)}
+
+/* ─── PROGRESS ───────────────────────────────────── */
+.progress-bar-wrap{background:var(--bg-raised);border-radius:20px;height:6px;overflow:hidden}
+.progress-bar-fill{height:100%;border-radius:20px;background:var(--accent);transition:width .4s ease}
+.progress-ring{position:relative;display:inline-flex;align-items:center;justify-content:center}
+.progress-ring svg{transform:rotate(-90deg)}
+.progress-ring-label{position:absolute;font-size:.8rem;font-weight:600;color:var(--text)}
+
+/* ─── CHECK ITEMS ────────────────────────────────── */
+.check-item{display:flex;align-items:flex-start;gap:.6rem;padding:.5rem 0;border-bottom:1px solid var(--border)}
+.check-item:last-child{border-bottom:none}
+.check-item input[type="checkbox"]{width:16px;height:16px;min-width:16px;accent-color:var(--accent);margin-top:.18rem;cursor:pointer}
+.check-item label{font-size:.875rem;cursor:pointer;flex:1;line-height:1.4}
+.check-item.done label{text-decoration:line-through;color:var(--text-3)}
+.check-item .item-meta{font-size:.7rem;color:var(--text-3);white-space:nowrap;margin-left:auto}
+
+/* ─── TASK INPUT ─────────────────────────────────── */
+.add-row{display:flex;gap:.5rem;margin-top:.75rem}
+.add-row input{flex:1}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem .9rem;border-radius:var(--radius-sm);font-size:.8rem;font-weight:600;transition:all .15s;letter-spacing:.01em}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-2)}
+.btn-sm{padding:.3rem .65rem;font-size:.75rem}
+.btn-ghost{color:var(--text-2);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--bg-raised);color:var(--text)}
+.btn-danger{color:var(--intensity);border:1px solid transparent}
+.btn-danger:hover{background:var(--intensity-bg)}
+
+/* ─── STREAK ─────────────────────────────────────── */
+.streak-badge{display:inline-flex;align-items:center;gap:.3rem;font-size:.75rem;font-weight:700;color:var(--warm);background:var(--warm-bg);padding:.15rem .45rem;border-radius:20px}
+.streak-badge svg{width:12px;height:12px;fill:var(--warm)}
+
+/* ─── KANBAN ─────────────────────────────────────── */
+.kanban{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}
+@media(max-width:700px){.kanban{grid-template-columns:1fr}}
+.kanban-col{background:var(--bg-raised);border-radius:var(--radius);padding:.85rem;min-height:200px}
+.kanban-col-title{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.kanban-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.65rem .75rem;margin-bottom:.5rem;font-size:.85rem;line-height:1.4}
+.kanban-card-actions{display:flex;gap:.25rem;margin-top:.4rem}
+.kanban-card-actions button{font-size:.7rem;padding:.1rem .35rem;border-radius:3px;font-weight:500;border:1px solid var(--border);color:var(--text-2);background:none;cursor:pointer}
+.kanban-card-actions button:hover{background:var(--bg-raised)}
+
+/* ─── WEEK STRIP ─────────────────────────────────── */
+.week-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:.4rem;margin:1rem 0}
+@media(max-width:600px){.week-strip{grid-template-columns:repeat(7,1fr);gap:.25rem}}
+.day-cell{border-radius:var(--radius-sm);padding:.5rem .3rem;border:1px solid var(--border);background:var(--bg-card);cursor:pointer;transition:all .15s;text-align:center}
+.day-cell:hover{border-color:var(--accent);background:var(--accent-bg)}
+.day-cell.today-cell{border-color:var(--accent);background:var(--accent-bg)}
+.day-cell .day-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin-bottom:.25rem}
+.day-cell.today-cell .day-label{color:var(--accent)}
+.day-cell .day-type{width:8px;height:8px;border-radius:50%;margin:0 auto}
+
+/* ─── BAKE LOG ───────────────────────────────────── */
+.bake-log-row{display:grid;grid-template-columns:90px 1fr 60px 60px 80px auto;gap:.5rem;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border);font-size:.82rem}
+@media(max-width:700px){.bake-log-row{grid-template-columns:1fr 1fr;gap:.35rem}}
+.bake-log-row input{padding:.3rem .5rem;font-size:.8rem}
+.star-rating{display:flex;gap:2px}
+.star-rating button{color:var(--border);font-size:1rem;line-height:1;padding:0;transition:color .1s}
+.star-rating button.lit{color:var(--warm)}
+
+/* ─── REVIEW ─────────────────────────────────────── */
+.review-section{margin-bottom:1.25rem}
+.review-section label{display:block;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-2);margin-bottom:.35rem}
+.review-entry{border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:.75rem;background:var(--bg-card)}
+.review-entry-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
+.review-entry-date{font-family:var(--font-display);font-weight:600;font-size:.95rem}
+
+/* ─── HABIT BARS ─────────────────────────────────── */
+.habit-week-bars{display:flex;gap:3px;align-items:flex-end;height:40px}
+.habit-bar{flex:1;border-radius:2px 2px 0 0;background:var(--accent);opacity:.25;transition:height .3s,opacity .3s;min-height:3px}
+.habit-bar.filled{opacity:1}
+
+/* ─── INJURY TOGGLE ──────────────────────────────── */
+.injury-toggle{display:flex;align-items:center;gap:.75rem;padding:.65rem .9rem;border-radius:var(--radius-sm);font-size:.82rem;font-weight:500;border:1px solid var(--border);background:var(--bg-card);cursor:pointer;transition:all .15s;user-select:none}
+.injury-toggle.ok{border-color:var(--zone2);color:var(--zone2);background:var(--zone2-bg)}
+.injury-toggle.caution{border-color:var(--intensity);color:var(--intensity);background:var(--intensity-bg)}
+.injury-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.injury-toggle.ok .injury-dot{background:var(--zone2)}
+.injury-toggle.caution .injury-dot{background:var(--intensity)}
+
+/* ─── GOAL AREA ──────────────────────────────────── */
+.goal-area{border-left:3px solid var(--accent);padding:.75rem 1rem;border-radius:0 var(--radius-sm) var(--radius-sm) 0;background:var(--bg-raised);margin-bottom:.75rem}
+.goal-area-title{font-weight:600;font-size:.85rem;margin-bottom:.5rem}
+
+/* ─── MISC ───────────────────────────────────────── */
+.divider{height:1px;background:var(--border);margin:1rem 0}
+.empty{color:var(--text-3);font-size:.82rem;padding:.75rem 0;text-align:center;font-style:italic}
+.text-accent{color:var(--accent)}
+.text-warm{color:var(--warm)}
+.mt-1{margin-top:.5rem}.mt-2{margin-top:1rem}.mt-3{margin-top:1.5rem}
+.mb-1{margin-bottom:.5rem}.mb-2{margin-bottom:1rem}
+.flex{display:flex}.items-center{align-items:center}.gap-1{gap:.5rem}.gap-2{gap:1rem}
+.justify-between{justify-content:space-between}
+.w-full{width:100%}
+.font-display{font-family:var(--font-display)}
+.text-sm{font-size:.82rem}.text-xs{font-size:.72rem}
+.truncate{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--text);color:var(--bg);padding:.55rem 1rem;border-radius:var(--radius-sm);font-size:.8rem;font-weight:500;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none;z-index:9999}
+#toast.show{opacity:1;transform:translateY(0)}
+
+/* ─── PHASE BAR ──────────────────────────────────── */
+.phase-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;border-radius:var(--radius-sm);overflow:hidden;margin:.75rem 0}
+.phase-segment{height:5px;background:var(--border)}
+.phase-segment.active{background:var(--accent)}
+.phase-segment.done{background:var(--accent-2);opacity:.4}
+
+/* ─── PRIORITY INPUTS ────────────────────────────── */
+.priority-item{display:flex;align-items:center;gap:.6rem;padding:.5rem 0;border-bottom:1px solid var(--border)}
+.priority-item:last-child{border-bottom:none}
+.priority-num{width:20px;height:20px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.priority-item input{border:none;background:none;padding:.1rem 0;font-size:.875rem}
+.priority-item input:focus{outline:none;border-bottom:1px solid var(--accent)}
+.priority-area-label{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);min-width:60px}
+
+/* ─── COMPLETION RING ────────────────────────────── */
+.completion-widget{display:flex;align-items:center;gap:1.25rem;padding:1rem;background:var(--accent-bg);border-radius:var(--radius);margin-bottom:1rem}
+.completion-text h3{font-family:var(--font-display);font-size:1.1rem;font-weight:700}
+.completion-text p{font-size:.8rem;color:var(--text-2);margin-top:.15rem}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-brand">BFB HQ<span>Besty's Dashboard</span></div>
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="showTab('today')">Today</button>
+    <button class="tab-btn" onclick="showTab('training')">Training</button>
+    <button class="tab-btn" onclick="showTab('habits')">Habits</button>
+    <button class="tab-btn" onclick="showTab('bakery')">Bakery</button>
+    <button class="tab-btn" onclick="showTab('life')">Life &amp; Family</button>
+    <button class="tab-btn" onclick="showTab('review')">Weekly Review</button>
+  </div>
+  <div class="nav-right">
+    <!-- Sync status indicator -->
+    <div id="sync-indicator" style="display:flex;align-items:center;gap:.35rem;font-size:.7rem;color:var(--text-3);cursor:pointer;padding:.2rem .5rem;border-radius:4px" onclick="openSettings()" title="Sync settings">
+      <div id="sync-dot" style="width:7px;height:7px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background .3s"></div>
+      <span id="sync-label" style="white-space:nowrap">not synced</span>
+    </div>
+    <button class="icon-btn" onclick="exportData()" title="Export JSON backup">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    </button>
+    <button class="icon-btn" onclick="openSettings()" title="Sync settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+    <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- SETTINGS PANEL (slide-in) -->
+<div id="settings-overlay" style="display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.5)" onclick="closeSettings(event)">
+  <div id="settings-panel" style="position:absolute;top:0;right:0;height:100%;width:min(420px,100vw);background:var(--bg-card);box-shadow:var(--shadow-md);overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:1.25rem">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <span style="font-family:var(--font-display);font-size:1.1rem;font-weight:700">Sync Settings</span>
+      <button class="icon-btn" onclick="closeSettings()"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+
+    <!-- How it works -->
+    <div style="background:var(--accent-bg);border-radius:var(--radius-sm);padding:.85rem;font-size:.82rem;line-height:1.6;color:var(--text-2)">
+      <div style="font-weight:600;color:var(--accent);margin-bottom:.35rem">How sync works</div>
+      Your data is saved to a private GitHub Gist — a secret JSON file only you can access.
+      It syncs automatically 3 seconds after any change. Works on any device where you open this file.
+      localStorage is always kept as a fallback if sync is unavailable.
+    </div>
+
+    <!-- Step 1 -->
+    <div>
+      <div class="section-label" style="margin-bottom:.5rem">Step 1 — Create a GitHub token</div>
+      <p style="font-size:.82rem;color:var(--text-2);margin-bottom:.5rem">
+        Go to <strong>github.com → Settings → Developer settings → Personal access tokens → Tokens (classic)</strong>.
+        Generate a new token with only the <code style="background:var(--bg-raised);padding:.1rem .3rem;border-radius:3px;font-size:.78rem">gist</code> scope. Copy it — you only see it once.
+      </p>
+      <button class="btn btn-ghost btn-sm w-full" onclick="window.open('https://github.com/settings/tokens/new?scopes=gist&description=BFB+HQ+Dashboard','_blank')" style="justify-content:center">
+        Open GitHub token page &#8599;
+      </button>
+    </div>
+
+    <!-- Step 2 -->
+    <div>
+      <div class="section-label" style="margin-bottom:.5rem">Step 2 — Paste your token</div>
+      <input type="password" id="settings-pat" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off"
+        style="font-family:monospace;font-size:.8rem;margin-bottom:.5rem">
+      <div id="pat-status" style="font-size:.75rem;color:var(--text-3);min-height:1.2em"></div>
+    </div>
+
+    <!-- Step 3 -->
+    <div>
+      <div class="section-label" style="margin-bottom:.5rem">Step 3 — Connect your Gist</div>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:.5rem;margin-bottom:.5rem">
+        <input id="settings-gist-id" placeholder="Gist ID (or create one below)" style="font-family:monospace;font-size:.8rem">
+        <button class="btn btn-ghost btn-sm" onclick="createGistFromSettings()" style="white-space:nowrap">Create new</button>
+      </div>
+      <div id="gist-status" style="font-size:.75rem;color:var(--text-3);min-height:1.2em"></div>
+    </div>
+
+    <!-- Actions -->
+    <div style="display:flex;flex-direction:column;gap:.5rem">
+      <button class="btn btn-primary w-full" onclick="saveSettings()" style="justify-content:center">Save &amp; test connection</button>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">
+        <button class="btn btn-ghost btn-sm" onclick="manualPush()" style="justify-content:center">Push local → Gist</button>
+        <button class="btn btn-ghost btn-sm" onclick="manualPull()" style="justify-content:center">Pull Gist → local</button>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="clearSyncSettings()" style="justify-content:center;margin-top:.25rem">Disconnect sync</button>
+    </div>
+
+    <!-- Current status -->
+    <div id="settings-sync-status" style="padding:.65rem;border-radius:var(--radius-sm);background:var(--bg-raised);font-size:.8rem;color:var(--text-2)">
+      Status: checking…
+    </div>
+
+    <!-- Password setting -->
+    <div style="border-top:1px solid var(--border);padding-top:1rem">
+      <div class="section-label" style="margin-bottom:.5rem">Dashboard password</div>
+      <p style="font-size:.78rem;color:var(--text-2);margin-bottom:.6rem">Protects the UI when hosted on Vercel. Leave blank to disable.</p>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:.5rem">
+        <input type="password" id="settings-pw" placeholder="New password (or leave blank to clear)">
+        <button class="btn btn-ghost btn-sm" onclick="setDashboardPassword(document.getElementById('settings-pw').value);document.getElementById('settings-pw').value=''">Set</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 1: TODAY -->
+<div id="tab-today" class="tab-panel active">
+  <div class="page-header">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 id="today-heading">Today</h1>
+        <p id="today-subheading"></p>
+      </div>
+      <div id="race-countdowns" style="text-align:right"></div>
+    </div>
+  </div>
+
+  <div class="completion-widget">
+    <div class="progress-ring">
+      <svg width="64" height="64" viewBox="0 0 64 64">
+        <circle cx="32" cy="32" r="26" stroke="var(--border)" stroke-width="5" fill="none"/>
+        <circle id="ring-fill" cx="32" cy="32" r="26" stroke="var(--accent)" stroke-width="5" fill="none"
+          stroke-dasharray="163.4" stroke-dashoffset="163.4" stroke-linecap="round" style="transition:stroke-dashoffset .5s ease"/>
+      </svg>
+      <div class="progress-ring-label" id="ring-pct">0%</div>
+    </div>
+    <div class="completion-text">
+      <h3 id="today-completion-title">Day in progress</h3>
+      <p id="today-completion-sub">Check off items to track your day</p>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:1rem">
+    <!-- Today's workout summary -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Today's Training</span>
+        <span id="today-phase-badge" class="badge badge-accent"></span>
+      </div>
+      <div id="today-workout-summary"></div>
+    </div>
+    <!-- Top 3 priorities -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Top 3 Priorities</span>
+        <span class="card-meta" id="today-date-small"></span>
+      </div>
+      <div id="priorities-list"></div>
+    </div>
+  </div>
+
+  <!-- Today's habits quick-view -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Habits</span>
+      <span id="today-habit-pct" class="text-sm text-accent" style="font-weight:600"></span>
+    </div>
+    <div id="today-habits-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.25rem"></div>
+  </div>
+</div>
+
+<!-- TAB 2: TRAINING -->
+<div id="tab-training" class="tab-panel">
+  <div class="page-header">
+    <h1>Training</h1>
+    <p>Phase-aware plan — 70M on Sep 12 · 100M on Oct 23</p>
+  </div>
+
+  <!-- Phase overview -->
+  <div class="card mb-2">
+    <div class="flex items-center justify-between mb-1">
+      <span class="card-title" id="training-phase-name"></span>
+      <div class="flex gap-1">
+        <button class="btn btn-ghost btn-sm" onclick="switchPhasePreview(-1)">&#8592;</button>
+        <button class="btn btn-ghost btn-sm" onclick="switchPhasePreview(1)">&#8594;</button>
+        <button class="btn btn-ghost btn-sm" onclick="resetPhasePreview()">Today</button>
+      </div>
+    </div>
+    <p class="text-sm" id="training-phase-desc" style="color:var(--text-2);margin-bottom:.75rem"></p>
+    <div class="phase-bar" id="phase-bar"></div>
+    <div class="flex items-center justify-between mt-1">
+      <span class="text-xs" style="color:var(--text-3)" id="phase-dates"></span>
+      <div class="flex gap-1 items-center">
+        <button id="injury-toggle-btn" class="injury-toggle ok" onclick="toggleInjury()">
+          <div class="injury-dot"></div>
+          <span id="injury-label">All clear — train as planned</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Week strip -->
+  <div class="card mb-2">
+    <div class="card-header">
+      <span class="card-title">This Week</span>
+      <span class="text-xs" style="color:var(--text-3)" id="week-label"></span>
+    </div>
+    <div class="week-strip" id="week-strip"></div>
+    <!-- Selected day detail -->
+    <div id="day-detail" style="margin-top:.5rem"></div>
+  </div>
+
+  <!-- Weekly volume summary -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">Week Volume</span></div>
+    <div class="grid-3">
+      <div style="text-align:center">
+        <div style="font-family:var(--font-display);font-size:1.8rem;font-weight:700;color:var(--zone2)" id="vol-run">—</div>
+        <div class="text-xs" style="color:var(--text-3);text-transform:uppercase;letter-spacing:.06em">Hrs Run</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-family:var(--font-display);font-size:1.8rem;font-weight:700;color:var(--strength)" id="vol-strength">—</div>
+        <div class="text-xs" style="color:var(--text-3);text-transform:uppercase;letter-spacing:.06em">Strength</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-family:var(--font-display);font-size:1.8rem;font-weight:700;color:var(--cycling)" id="vol-cycling">—</div>
+        <div class="text-xs" style="color:var(--text-3);text-transform:uppercase;letter-spacing:.06em">Cycling</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div id="workout-checkboxes"></div>
+  </div>
+</div>
+
+<!-- TAB 3: HABITS -->
+<div id="tab-habits" class="tab-panel">
+  <div class="page-header">
+    <h1>Habits</h1>
+    <p>Daily tracking — resets at midnight</p>
+  </div>
+  <div class="grid-2">
+    <div>
+      <div id="habits-list"></div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">This Week</span></div>
+        <div id="habit-week-summary"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 4: BAKERY -->
+<div id="tab-bakery" class="tab-panel">
+  <div class="page-header">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 style="font-style:italic">BFB — Bootleg Fine Bakery</h1>
+        <p>Regulated by nobody. Baked by Besty.</p>
+      </div>
+      <div style="text-align:right">
+        <div id="starter-status" class="badge badge-warm" style="cursor:pointer" onclick="showStarterModal()">Starter</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task board -->
+  <div class="card mb-2">
+    <div class="card-header">
+      <span class="card-title">Task Board</span>
+      <button class="btn btn-ghost btn-sm" onclick="openAddBakeryTask()">+ Add task</button>
+    </div>
+    <div class="kanban" id="bakery-kanban"></div>
+  </div>
+
+  <!-- Bake log -->
+  <div class="card mb-2">
+    <div class="card-header">
+      <span class="card-title">Bake Log</span>
+      <button class="btn btn-ghost btn-sm" onclick="addBakeLogRow()">+ New entry</button>
+    </div>
+    <div id="bake-log"></div>
+  </div>
+
+  <!-- Starter tracker modal (inline) -->
+  <div id="starter-modal" style="display:none" class="card">
+    <div class="card-header">
+      <span class="card-title">Starter Health</span>
+      <button class="icon-btn" onclick="closeStarterModal()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="grid-2">
+      <div>
+        <div class="section-label">Last Fed</div>
+        <input type="date" id="starter-last-fed" onchange="saveStarter()">
+      </div>
+      <div>
+        <div class="section-label">Next Feed Due</div>
+        <div id="starter-next-feed" style="font-weight:600;padding:.45rem 0"></div>
+      </div>
+    </div>
+    <div class="mt-2">
+      <div class="section-label">Health Notes</div>
+      <textarea id="starter-notes" placeholder="Activity level, smell, rise behavior..." onchange="saveStarter()" rows="3"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 5: LIFE & FAMILY -->
+<div id="tab-life" class="tab-panel">
+  <div class="page-header">
+    <h1>Life &amp; Family</h1>
+    <p>Goals, recurring tasks, and what matters beyond training and bread</p>
+  </div>
+
+  <div class="grid-2 mb-2">
+    <div id="goal-areas"></div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Recurring Tasks</span>
+        <button class="btn btn-ghost btn-sm" onclick="addRecurringTask()">+ Add</button>
+      </div>
+      <div id="recurring-tasks"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 6: WEEKLY REVIEW -->
+<div id="tab-review" class="tab-panel">
+  <div class="page-header">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1>Weekly Review</h1>
+        <p>Sunday reflection — look back to look forward</p>
+      </div>
+      <button class="btn btn-primary" onclick="saveReview()">Save Review</button>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title mb-2" style="font-family:var(--font-display)">This Week's Reflection</div>
+      <div class="review-section">
+        <label>Training wins this week</label>
+        <textarea id="rv-training-wins" rows="3" placeholder="What went well? PRs, consistency, good sessions..."></textarea>
+      </div>
+      <div class="review-section">
+        <label>Training misses / injury flags</label>
+        <textarea id="rv-training-misses" rows="3" placeholder="Skipped sessions, pain points, warning signs..."></textarea>
+      </div>
+      <div class="review-section">
+        <label>Bakery progress</label>
+        <textarea id="rv-bakery" rows="3" placeholder="Loaves baked, experiments, brand work..."></textarea>
+      </div>
+      <div class="review-section">
+        <label>Family moments</label>
+        <textarea id="rv-family" rows="3" placeholder="Time with family, special moments..."></textarea>
+      </div>
+      <div class="review-section">
+        <label>One thing to carry into next week</label>
+        <textarea id="rv-carry" rows="2" placeholder="The single most important focus..."></textarea>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Past Reviews</span>
+        </div>
+        <div id="past-reviews"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- PASSWORD GATE -->
+<div id="pw-gate" style="display:none;position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1rem">
+  <div style="text-align:center;margin-bottom:.5rem">
+    <div style="font-family:var(--font-display);font-size:2rem;font-weight:700;color:var(--accent)">BFB HQ</div>
+    <div style="font-size:.8rem;color:var(--text-3);margin-top:.15rem">Regulated by nobody. Baked by Besty.</div>
+  </div>
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;width:min(320px,90vw);box-shadow:var(--shadow-md)">
+    <div style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-2);margin-bottom:.5rem">Enter password</div>
+    <input type="password" id="pw-input" placeholder="Password" style="margin-bottom:.75rem"
+      onkeydown="if(event.key==='Enter') checkPassword()">
+    <button class="btn btn-primary w-full" onclick="checkPassword()" style="justify-content:center">Enter</button>
+    <div id="pw-error" style="font-size:.75rem;color:var(--intensity);margin-top:.5rem;min-height:1em;text-align:center"></div>
+  </div>
+</div>
+
+<!-- SIMPLE MODAL -->
+<div id="modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:center;justify-content:center">
+  <div id="modal-box" style="background:var(--bg-card);border-radius:var(--radius);padding:1.5rem;width:90%;max-width:420px;box-shadow:var(--shadow-md)">
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════
+//  DATA
+// ════════════════════════════════════════════════════
+
+const PHASES = [
+  { id:1, name:'Phase 1: Base + Rehab',   short:'P1', start:'2026-03-23', end:'2026-05-31', desc:'Zone 2 focus · Light strength (Days A+B) · No intensity over 20 min/week · Injury rehab priority' },
+  { id:2, name:'Phase 2: Build',           short:'P2', start:'2026-06-01', end:'2026-07-15', desc:'Longer runs · Back-to-backs · Introduce Strength Day C · Tempo work added' },
+  { id:3, name:'Phase 3: Race-Specific',   short:'P3', start:'2026-07-16', end:'2026-09-12', desc:'Race simulation · Taper into 70-miler Sep 12 · Reduce volume, sharpen quality' },
+  { id:4, name:'Phase 4: 100M Block',      short:'P4', start:'2026-09-13', end:'2026-10-23', desc:'Recovery post-70M · Short focused 100M block · Final taper · Target sub-24' },
+];
+
+const STRENGTH_A = ['Nordic hamstring curl (isometric holds → eccentrics)','Copenhagen plank','Romanian deadlift','Glute bridge','Calf raises'];
+const STRENGTH_B = ['Single-leg squat to box','Lateral band walk','Step-up with knee drive','Y-balance reach'];
+const STRENGTH_C = ['Box jumps (Phase 2+)','Downhill simulation squat','Banded hip flexion'];
+
+const WEEKLY = {
+  1: { label:'Mon', type:'strength', badge:'strength',  title:'Strength A + Quality Run',        items:['Strength A (20–30 min)',...STRENGTH_A,'Quality run: strides / intervals (≤20 min intensity)'] },
+  2: { label:'Tue', type:'zone2',    badge:'zone2',     title:'Zone 2 Run or Cycling',            items:['Zone 2 run 40–60 min','— OR — Cycling 60 min','Keep HR in Zone 2 throughout'] },
+  3: { label:'Wed', type:'strength', badge:'strength',  title:'Strength B + Hill Reps',           items:['Strength B (20–30 min)',...STRENGTH_B,'Hill reps (controlled, Zone 2 only in Phase 1)'] },
+  4: { label:'Thu', type:'rest',     badge:'rest',      title:'Full Rest or Easy Cycling',        items:['Prioritize recovery','Option: easy cycling if feeling fresh','No running today'] },
+  5: { label:'Fri', type:'strength', badge:'strength',  title:'Strength A/B/C + Easy Run',       items:['Alt: Strength A, B, or C (15–40 min)','Easy run Zone 2 only','Light effort — legs fresh for Sat'] },
+  6: { label:'Sat', type:'long',     badge:'zone2',     title:'Long Run — Zone 2',                items:['Zone 2 only. Time on feet.','Routes: Ward Pound Ridge / Bear Mountain / Bull Hill','Bring fuel. No racing.'] },
+  0: { label:'Sun', type:'soccer',   badge:'soccer',    title:'Soccer + Optional Easy Run',      items:['Soccer ~90 min','Optional easy run after (Zone 2 only)','Enjoy it — recover well'] },
+};
+
+const HABITS_DEF = [
+  { id:'mob',    cat:'Training',   label:'Morning mobility (10 min)' },
+  { id:'z2hr',   cat:'Training',   label:'Zone 2 heart rate check' },
+  { id:'nutr',   cat:'Training',   label:'Post-run nutrition within 30 min' },
+  { id:'roll',   cat:'Training',   label:'Stretching / foam roll (10 min)' },
+  { id:'sleep',  cat:'Recovery',   label:'8 hrs sleep target' },
+  { id:'noalc',  cat:'Recovery',   label:'No alcohol on training days' },
+  { id:'ice',    cat:'Recovery',   label:'Ice / compression if needed' },
+  { id:'starter',cat:'Bakery',     label:'Starter feed check' },
+  { id:'dough',  cat:'Bakery',     label:'Dough journal entry' },
+  { id:'fam',    cat:'Life',       label:'Family dinner' },
+  { id:'read',   cat:'Life',       label:'10 min reading' },
+  { id:'future', cat:'Life',       label:'One thing done for future Besty' },
+];
+
+const BAKERY_TASKS_DEFAULT = [
+  { id:'bt1', text:'Finalize logo direction (BFB vs Rebel Cardinal)', col:'todo' },
+  { id:'bt2', text:'Research cottage food laws NY', col:'todo' },
+  { id:'bt3', text:'Price flour suppliers', col:'todo' },
+  { id:'bt4', text:'Test new grain variety', col:'inprogress' },
+  { id:'bt5', text:'Build Instagram presence', col:'inprogress' },
+  { id:'bt6', text:'Create first price list', col:'done' },
+];
+
+const GOAL_AREAS_DEF = [
+  { id:'health',   title:'Health',          color:'var(--zone2)',    focus:'Return fully from hamstring/adductor injury', actions:['Stick to Phase 1 rehab protocol','Sleep 8hrs minimum','Post-run nutrition within 30min'] },
+  { id:'family',   title:'Family',          color:'var(--soccer)',   focus:'More present, less distracted', actions:['Family dinner every night','Weekly one-on-one time with each kid','Phone away after 8pm'] },
+  { id:'finance',  title:'Finance',         color:'var(--cycling)',  focus:'Monthly budget review', actions:['Track bakery expenses','Monthly review on first Sunday','Build BFB cost model'] },
+  { id:'growth',   title:'Personal Growth', color:'var(--strength)', focus:'10 min reading every day', actions:['Finish current book','Journal 3x/week','Morning pages before 7am'] },
+];
+
+const RECURRING_DEFAULT = [
+  { id:'r1', text:'Weekly grocery run',     freq:'weekly',  done:false },
+  { id:'r2', text:'Monthly budget review',  freq:'monthly', done:false },
+  { id:'r3', text:'Call parents',           freq:'weekly',  done:false },
+  { id:'r4', text:"Kids' activities check", freq:'weekly',  done:false },
+];
+
+// ════════════════════════════════════════════════════
+//  STATE / STORAGE
+// ════════════════════════════════════════════════════
+
+const KEY = k => `bfbhq_${k}`;
+const load = k => { try{ const v=localStorage.getItem(KEY(k)); return v?JSON.parse(v):null }catch{return null} };
+const save = (k,v) => {
+  try{ localStorage.setItem(KEY(k),JSON.stringify(v)); }catch{}
+  // Trigger a debounced push to Gist 3 s after the last change
+  if(window.gistSync && window.gistSync.configured()) window.gistSync.debouncedPush();
+};
+
+function getState(k, def) { const v=load(k); return v!==null?v:def; }
+
+const today = () => new Date().toISOString().slice(0,10);
+const todayDisplay = () => {
+  const d=new Date(); const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  return `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+};
+
+// ════════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════════
+
+function getCurrentPhase(dateStr) {
+  const d = dateStr ? new Date(dateStr) : new Date();
+  for(const p of PHASES) {
+    const s=new Date(p.start), e=new Date(p.end);
+    e.setHours(23,59,59);
+    if(d>=s && d<=e) return p;
+  }
+  return PHASES[PHASES.length-1];
+}
+
+function daysUntil(dateStr) {
+  const t=new Date(); t.setHours(0,0,0,0);
+  const d=new Date(dateStr); d.setHours(0,0,0,0);
+  return Math.ceil((d-t)/(1000*60*60*24));
+}
+
+function getTrainingWeek() {
+  const start=new Date('2026-03-23'); start.setHours(0,0,0,0);
+  const t=new Date(); t.setHours(0,0,0,0);
+  return Math.floor((t-start)/(7*24*60*60*1000))+1;
+}
+
+function badgeClass(b) {
+  const map={strength:'badge-strength',zone2:'badge-zone2',intensity:'badge-intensity',cycling:'badge-cycling',soccer:'badge-soccer',rest:'badge-rest'};
+  return map[b]||'badge-accent';
+}
+
+function toast(msg) {
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2200);
+}
+
+function uid() { return Math.random().toString(36).slice(2,9); }
+
+// ════════════════════════════════════════════════════
+//  TABS
+// ════════════════════════════════════════════════════
+let activeTab='today';
+let phasePreviewIdx = null;
+
+function showTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  const map={today:'Today',training:'Training',habits:'Habits',bakery:'Bakery',life:'Life',review:'Weekly'};
+  document.querySelectorAll('.tab-btn').forEach(b=>{
+    b.classList.remove('active');
+    if(b.textContent.trim().startsWith(map[id]||id)) b.classList.add('active');
+  });
+  activeTab=id;
+  renderTab(id);
+}
+
+function renderTab(id) {
+  const fn={today:renderToday,training:renderTraining,habits:renderHabits,bakery:renderBakery,life:renderLife,review:renderReview};
+  if(fn[id]) fn[id]();
+}
+
+// ════════════════════════════════════════════════════
+//  TAB 1 — TODAY
+// ════════════════════════════════════════════════════
+function renderToday() {
+  const d=new Date();
+  const phase=getCurrentPhase();
+  const dow=d.getDay();
+  const plan=WEEKLY[dow];
+
+  // Heading
+  document.getElementById('today-heading').textContent=todayDisplay();
+  document.getElementById('today-subheading').textContent=`${phase.name} · Week ${getTrainingWeek()} of training`;
+  document.getElementById('today-date-small').textContent=today();
+
+  // Countdowns
+  const d70=daysUntil('2026-09-12'), d100=daysUntil('2026-10-23');
+  document.getElementById('race-countdowns').innerHTML=`
+    <div style="font-size:.75rem;color:var(--text-2)">
+      <div><span style="font-weight:700;color:var(--accent);font-size:1rem">${d70}</span> days to 70M</div>
+      <div><span style="font-weight:700;color:var(--warm);font-size:1rem">${d100}</span> days to 100M</div>
+    </div>`;
+
+  // Phase badge
+  document.getElementById('today-phase-badge').textContent=phase.short;
+
+  // Workout summary
+  const wo=document.getElementById('today-workout-summary');
+  wo.innerHTML=`
+    <div class="flex items-center gap-1 mb-1">
+      <span class="badge ${badgeClass(plan.badge)}">${plan.type}</span>
+    </div>
+    <div style="font-family:var(--font-display);font-size:1rem;font-weight:600;margin-bottom:.5rem">${plan.title}</div>
+    <ul style="color:var(--text-2);font-size:.82rem">
+      ${plan.items.slice(0,3).map(i=>`<li style="padding:.2rem 0;border-bottom:1px solid var(--border)">${i}</li>`).join('')}
+      ${plan.items.length>3?`<li style="padding:.2rem 0;color:var(--text-3);font-style:italic">+${plan.items.length-3} more — see Training tab</li>`:''}
+    </ul>`;
+
+  // Priorities
+  const priorities=getState('priorities_'+today(),[{area:'Training',val:''},{area:'Bakery',val:''},{area:'Life',val:''}]);
+  const pl=document.getElementById('priorities-list');
+  pl.innerHTML=priorities.map((p,i)=>`
+    <div class="priority-item">
+      <div class="priority-num">${i+1}</div>
+      <span class="priority-area-label">${p.area}</span>
+      <input value="${p.val||''}" placeholder="Today's focus..." onchange="savePriority(${i},this.value)" />
+    </div>`).join('');
+
+  // Habits
+  const habData=getState('habits_'+today(),{});
+  const hg=document.getElementById('today-habits-grid');
+  hg.innerHTML=HABITS_DEF.map(h=>`
+    <div class="check-item" style="border-bottom:1px solid var(--border);padding:.4rem .5rem">
+      <input type="checkbox" id="th_${h.id}" ${habData[h.id]?'checked':''} onchange="toggleHabitToday('${h.id}',this.checked)">
+      <label for="th_${h.id}" style="font-size:.8rem">${h.label}</label>
+    </div>`).join('');
+
+  updateCompletionRing();
+}
+
+function savePriority(idx, val) {
+  const priorities=getState('priorities_'+today(),[{area:'Training',val:''},{area:'Bakery',val:''},{area:'Life',val:''}]);
+  priorities[idx].val=val;
+  save('priorities_'+today(),priorities);
+  updateCompletionRing();
+}
+
+function toggleHabitToday(id, checked) {
+  const habData=getState('habits_'+today(),{});
+  habData[id]=checked;
+  save('habits_'+today(),habData);
+  updateStreaks(id);
+  updateCompletionRing();
+  if(activeTab==='habits') renderHabits();
+}
+
+function updateCompletionRing() {
+  const habData=getState('habits_'+today(),{});
+  const habDone=HABITS_DEF.filter(h=>habData[h.id]).length;
+  const priorities=getState('priorities_'+today(),[]);
+  const priDone=priorities.filter(p=>p.val&&p.val.trim()).length;
+  const total=HABITS_DEF.length+3;
+  const done=habDone+priDone;
+  const pct=Math.round((done/total)*100);
+
+  const circ=163.4;
+  const offset=circ-(circ*pct/100);
+  document.getElementById('ring-fill').style.strokeDashoffset=offset;
+  document.getElementById('ring-pct').textContent=pct+'%';
+
+  const pctEl=document.getElementById('today-habit-pct');
+  if(pctEl) pctEl.textContent=`${habDone}/${HABITS_DEF.length} done`;
+
+  const titleEl=document.getElementById('today-completion-title');
+  const subEl=document.getElementById('today-completion-sub');
+  if(pct===100){titleEl.textContent='Day complete.';subEl.textContent='Everything checked. Go rest.';}
+  else if(pct>=70){titleEl.textContent='Strong day.';subEl.textContent=`${100-pct}% left to close it out`;}
+  else if(pct>=30){titleEl.textContent='Day in progress';subEl.textContent=`${done} of ${total} items done`;}
+  else{titleEl.textContent='Just getting started';subEl.textContent='Check off items as you go';}
+}
+
+// ════════════════════════════════════════════════════
+//  TAB 2 — TRAINING
+// ════════════════════════════════════════════════════
+let selectedDayDow = new Date().getDay();
+
+function renderTraining() {
+  const previewPhase = phasePreviewIdx !== null ? PHASES[phasePreviewIdx] : getCurrentPhase();
+  const week = getTrainingWeek();
+
+  // Phase header
+  document.getElementById('training-phase-name').textContent=previewPhase.name+
+    (phasePreviewIdx===null?` · Week ${week}`:'  (preview)');
+  document.getElementById('training-phase-desc').textContent=previewPhase.desc;
+  document.getElementById('phase-dates').textContent=`${previewPhase.start}  →  ${previewPhase.end}`;
+
+  // Phase bar
+  const bar=document.getElementById('phase-bar');
+  bar.innerHTML=PHASES.map((p,i)=>{
+    const cur=getCurrentPhase();
+    const cls = p.id<cur.id ? 'done' : p.id===cur.id ? 'active' : '';
+    return `<div class="phase-segment ${cls}" title="${p.name}"></div>`;
+  }).join('');
+
+  // Injury toggle
+  const injuryOk=getState('injury_ok',true);
+  const btn=document.getElementById('injury-toggle-btn');
+  btn.className=`injury-toggle ${injuryOk?'ok':'caution'}`;
+  document.getElementById('injury-label').textContent=injuryOk?'All clear — train as planned':'Take it easy today';
+
+  // Week strip
+  const strip=document.getElementById('week-strip');
+  const today_dow=new Date().getDay();
+  strip.innerHTML=[1,2,3,4,5,6,0].map(dow=>{
+    const p=WEEKLY[dow];
+    const typeColors={strength:'var(--strength)',zone2:'var(--zone2)',rest:'var(--rest)',long:'var(--zone2)',soccer:'var(--soccer)'};
+    const isToday=dow===today_dow;
+    const isSel=dow===selectedDayDow;
+    return `<div class="day-cell${isToday?' today-cell':''}" onclick="selectDay(${dow})" style="${isSel?'border-color:var(--accent);background:var(--accent-bg)':''}">
+      <div class="day-label" style="${isToday?'color:var(--accent)':''}">${p.label}</div>
+      <div class="day-type" style="background:${typeColors[p.type]||'var(--border)'}"></div>
+    </div>`;
+  }).join('');
+
+  // Week label
+  const weekStart=new Date(); weekStart.setDate(weekStart.getDate()-((weekStart.getDay()+6)%7));
+  const weekEnd=new Date(weekStart); weekEnd.setDate(weekEnd.getDate()+6);
+  const fmt=d=>d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  document.getElementById('week-label').textContent=`${fmt(weekStart)} – ${fmt(weekEnd)}`;
+
+  renderDayDetail(selectedDayDow);
+  renderVolumeLog();
+}
+
+function selectDay(dow) {
+  selectedDayDow=dow;
+  renderTraining();
+}
+
+function renderDayDetail(dow) {
+  const plan=WEEKLY[dow];
+  const dd=document.getElementById('day-detail');
+  dd.innerHTML=`
+    <div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:.85rem;background:var(--bg-raised)">
+      <div class="flex items-center gap-1 mb-1">
+        <span style="font-weight:700;font-size:.85rem">${plan.label} — ${plan.title}</span>
+        <span class="badge ${badgeClass(plan.badge)}" style="margin-left:auto">${plan.type}</span>
+      </div>
+      <ul style="margin-top:.5rem">
+        ${plan.items.map((item,i)=>{
+          const ck=getState(`workout_${getWeekDayDate(dow)}_${i}`,false);
+          return `<div class="check-item">
+            <input type="checkbox" id="wk_${dow}_${i}" ${ck?'checked':''} onchange="toggleWorkoutItem(${dow},${i},this.checked)">
+            <label for="wk_${dow}_${i}">${item}</label>
+          </div>`;
+        }).join('')}
+      </ul>
+    </div>`;
+}
+
+function getWeekDayDate(dow) {
+  const d=new Date(); const diff=dow-d.getDay();
+  const wd=new Date(d); wd.setDate(d.getDate()+diff);
+  return wd.toISOString().slice(0,10);
+}
+
+function toggleWorkoutItem(dow, idx, checked) {
+  save(`workout_${getWeekDayDate(dow)}_${idx}`, checked);
+  renderVolumeLog();
+  if(activeTab==='today') updateCompletionRing();
+}
+
+function renderVolumeLog() {
+  // Count this week's completed strength / cycling sessions
+  let strSess=0, cycSess=0, runSess=0;
+  [1,3,5].forEach(d=>{ if(getState(`workout_${getWeekDayDate(d)}_0`,false)) strSess++; });
+  [2,4].forEach(d=>{ if(getState(`workout_${getWeekDayDate(d)}_0`,false)) cycSess++; });
+  [2,5,6].forEach(d=>{ if(getState(`workout_${getWeekDayDate(d)}_0`,false)) runSess++; });
+  document.getElementById('vol-run').textContent=runSess+'/3';
+  document.getElementById('vol-strength').textContent=strSess+'/3';
+  document.getElementById('vol-cycling').textContent=cycSess+'/2';
+
+  // Fill workout-checkboxes with this week's session status
+  const el=document.getElementById('workout-checkboxes');
+  el.innerHTML=`<div class="section-label" style="margin-bottom:.5rem">This Week — Session Log</div>`+
+    [1,2,3,4,5,6,0].map(dow=>{
+      const p=WEEKLY[dow]; const done=getState(`workout_${getWeekDayDate(dow)}_0`,false);
+      return `<div class="flex items-center gap-1" style="padding:.3rem 0;border-bottom:1px solid var(--border)">
+        <div style="width:6px;height:6px;border-radius:50%;background:${done?'var(--accent)':'var(--border)'}"></div>
+        <span class="text-xs" style="min-width:28px;font-weight:600;color:var(--text-3)">${p.label}</span>
+        <span class="text-sm" style="flex:1;color:${done?'var(--text)':'var(--text-3)'}">${p.title}</span>
+        <span class="badge ${badgeClass(p.badge)}" style="font-size:.65rem">${p.type}</span>
+      </div>`;
+    }).join('');
+}
+
+function switchPhasePreview(dir) {
+  const cur = phasePreviewIdx !== null ? phasePreviewIdx : PHASES.indexOf(getCurrentPhase());
+  phasePreviewIdx = Math.min(Math.max(0, cur+dir), PHASES.length-1);
+  renderTraining();
+}
+function resetPhasePreview() { phasePreviewIdx=null; renderTraining(); }
+function toggleInjury() {
+  const cur=getState('injury_ok',true);
+  save('injury_ok',!cur);
+  renderTraining();
+  toast(!cur?'Marked all clear.':'Injury caution flag set — take it easy.');
+}
+
+// ════════════════════════════════════════════════════
+//  TAB 3 — HABITS
+// ════════════════════════════════════════════════════
+function renderHabits() {
+  const habData=getState('habits_'+today(),{});
+  const cats=[...new Set(HABITS_DEF.map(h=>h.cat))];
+  const hl=document.getElementById('habits-list');
+  hl.innerHTML=cats.map(cat=>{
+    const habits=HABITS_DEF.filter(h=>h.cat===cat);
+    return `<div class="card mb-2">
+      <div class="card-header">
+        <span class="card-title">${cat}</span>
+        <span class="text-xs" style="color:var(--text-3)">${habits.filter(h=>habData[h.id]).length}/${habits.length}</span>
+      </div>
+      ${habits.map(h=>{
+        const streak=calcStreak(h.id);
+        return `<div class="check-item">
+          <input type="checkbox" id="hb_${h.id}" ${habData[h.id]?'checked':''} onchange="toggleHabitToday('${h.id}',this.checked)">
+          <label for="hb_${h.id}">${h.label}</label>
+          ${streak>0?`<div class="streak-badge" style="margin-left:auto;flex-shrink:0"><svg viewBox="0 0 10 10"><path d="M5 1 C5 1 8 3.5 8 6a3 3 0 0 1-6 0C2 3.5 5 1 5 1Z"/></svg>${streak}</div>`:''}
+        </div>`;
+      }).join('')}
+    </div>`;
+  }).join('');
+
+  // Weekly summary
+  const ws=document.getElementById('habit-week-summary');
+  const last7=getLast7Dates();
+  ws.innerHTML=HABITS_DEF.map(h=>{
+    const pct=last7.map(d=>{ const hd=getState('habits_'+d,{}); return hd[h.id]?1:0; });
+    return `<div class="flex items-center gap-1" style="margin-bottom:.6rem">
+      <div class="text-xs truncate" style="min-width:140px;max-width:140px;color:var(--text-2)">${h.label}</div>
+      <div class="habit-week-bars" style="flex:1">
+        ${pct.map(v=>`<div class="habit-bar${v?' filled':''}" style="height:${Math.max(4,v*28)}px"></div>`).join('')}
+      </div>
+      <div class="text-xs" style="color:var(--text-3);min-width:28px;text-align:right">${pct.filter(Boolean).length}/7</div>
+    </div>`;
+  }).join('');
+}
+
+function calcStreak(id) {
+  let streak=0, d=new Date();
+  while(true) {
+    const ds=d.toISOString().slice(0,10);
+    const hd=getState('habits_'+ds,{});
+    if(hd[id]) { streak++; d.setDate(d.getDate()-1); } else break;
+    if(streak>365) break;
+  }
+  return streak;
+}
+
+function updateStreaks(id) { /* streaks recalculated on render */ }
+
+function getLast7Dates() {
+  const arr=[]; const d=new Date();
+  for(let i=6;i>=0;i--){ const dd=new Date(d); dd.setDate(dd.getDate()-i); arr.push(dd.toISOString().slice(0,10)); }
+  return arr;
+}
+
+// ════════════════════════════════════════════════════
+//  TAB 4 — BAKERY
+// ════════════════════════════════════════════════════
+function renderBakery() {
+  renderKanban();
+  renderBakeLog();
+  renderStarterStatus();
+}
+
+function renderKanban() {
+  const tasks=getState('bakery_tasks', BAKERY_TASKS_DEFAULT);
+  const cols={todo:'To-Do',inprogress:'In Progress',done:'Done'};
+  const kb=document.getElementById('bakery-kanban');
+  kb.innerHTML=Object.entries(cols).map(([col,label])=>`
+    <div class="kanban-col">
+      <div class="kanban-col-title" style="color:${col==='done'?'var(--zone2)':col==='inprogress'?'var(--warm)':'var(--text-2)'}">${label} · ${tasks.filter(t=>t.col===col).length}</div>
+      ${tasks.filter(t=>t.col===col).map(t=>`
+        <div class="kanban-card" id="kc_${t.id}">
+          <div>${t.text}</div>
+          <div class="kanban-card-actions">
+            ${col!=='todo'?`<button onclick="moveKanban('${t.id}','prev')">&#8592;</button>`:''}
+            ${col!=='done'?`<button onclick="moveKanban('${t.id}','next')" style="color:var(--accent)">&#8594;</button>`:''}
+            <button onclick="deleteKanban('${t.id}')" style="margin-left:auto;color:var(--intensity)">&#215;</button>
+          </div>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+function moveKanban(id, dir) {
+  const tasks=getState('bakery_tasks', BAKERY_TASKS_DEFAULT);
+  const order=['todo','inprogress','done'];
+  const t=tasks.find(t=>t.id===id); if(!t) return;
+  const idx=order.indexOf(t.col);
+  if(dir==='next'&&idx<2) t.col=order[idx+1];
+  if(dir==='prev'&&idx>0) t.col=order[idx-1];
+  save('bakery_tasks',tasks);
+  renderKanban();
+}
+function deleteKanban(id) {
+  if(!confirm('Delete this task?')) return;
+  const tasks=getState('bakery_tasks', BAKERY_TASKS_DEFAULT).filter(t=>t.id!==id);
+  save('bakery_tasks',tasks);
+  renderKanban();
+}
+function openAddBakeryTask() {
+  showModal(`
+    <div class="card-title mb-2">Add Bakery Task</div>
+    <input id="new-task-text" placeholder="Task description..." style="margin-bottom:.75rem">
+    <select id="new-task-col" style="margin-bottom:1rem">
+      <option value="todo">To-Do</option>
+      <option value="inprogress">In Progress</option>
+      <option value="done">Done</option>
+    </select>
+    <div class="flex gap-1">
+      <button class="btn btn-primary" onclick="confirmAddBakeryTask()">Add Task</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>`);
+}
+function confirmAddBakeryTask() {
+  const text=document.getElementById('new-task-text').value.trim();
+  if(!text) return;
+  const col=document.getElementById('new-task-col').value;
+  const tasks=getState('bakery_tasks', BAKERY_TASKS_DEFAULT);
+  tasks.push({id:uid(),text,col});
+  save('bakery_tasks',tasks);
+  closeModal();
+  renderKanban();
+  toast('Task added.');
+}
+
+function renderBakeLog() {
+  const logs=getState('bake_log',[]);
+  const el=document.getElementById('bake-log');
+  if(!logs.length){ el.innerHTML='<div class="empty">No bakes logged yet.</div>'; return; }
+  el.innerHTML=`
+    <div style="overflow-x:auto">
+      <div style="min-width:580px">
+        <div style="display:grid;grid-template-columns:100px 1fr 70px 70px 80px 32px;gap:.5rem;padding:.35rem 0;border-bottom:1px solid var(--border)">
+          ${['Date','Loaf Type','Hydration','Notes','Rating',''].map(h=>`<div class="text-xs" style="color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.06em">${h}</div>`).join('')}
+        </div>
+        ${logs.map(r=>`
+          <div style="display:grid;grid-template-columns:100px 1fr 70px 70px 80px 32px;gap:.5rem;align-items:center;padding:.4rem 0;border-bottom:1px solid var(--border)">
+            <div class="text-xs" style="color:var(--text-2)">${r.date}</div>
+            <div class="text-sm">${r.loaf||'—'}</div>
+            <div class="text-sm" style="color:var(--text-2)">${r.hydration?r.hydration+'%':'—'}</div>
+            <div class="text-xs" style="color:var(--text-2)">${r.notes||'—'}</div>
+            <div class="star-rating">${[1,2,3,4,5].map(s=>`<button class="${s<=(r.rating||0)?'lit':''}" onclick="rateBake('${r.id}',${s})">&#9733;</button>`).join('')}</div>
+            <button class="btn-danger btn btn-sm" onclick="deleteBake('${r.id}')">&#215;</button>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function addBakeLogRow() {
+  showModal(`
+    <div class="card-title mb-2">New Bake Entry</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem">
+      <div><div class="section-label">Date</div><input type="date" id="bl-date" value="${today()}"></div>
+      <div><div class="section-label">Loaf Type</div><input id="bl-loaf" placeholder="e.g. Country sourdough"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem">
+      <div><div class="section-label">Hydration %</div><input type="number" id="bl-hydration" placeholder="75"></div>
+      <div><div class="section-label">Rating (1–5)</div><input type="number" id="bl-rating" min="1" max="5" placeholder="4"></div>
+    </div>
+    <div class="mb-2"><div class="section-label">Notes</div><textarea id="bl-notes" rows="2" placeholder="Crust, crumb, fermentation notes..."></textarea></div>
+    <div class="flex gap-1">
+      <button class="btn btn-primary" onclick="confirmAddBake()">Save</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>`);
+}
+function confirmAddBake() {
+  const logs=getState('bake_log',[]);
+  logs.unshift({
+    id:uid(),
+    date:document.getElementById('bl-date').value,
+    loaf:document.getElementById('bl-loaf').value,
+    hydration:document.getElementById('bl-hydration').value,
+    notes:document.getElementById('bl-notes').value,
+    rating:parseInt(document.getElementById('bl-rating').value)||0
+  });
+  save('bake_log',logs);
+  closeModal();
+  renderBakeLog();
+  toast('Bake logged.');
+}
+function rateBake(id, rating) {
+  const logs=getState('bake_log',[]);
+  const r=logs.find(r=>r.id===id); if(r) r.rating=rating;
+  save('bake_log',logs);
+  renderBakeLog();
+}
+function deleteBake(id) {
+  const logs=getState('bake_log',[]).filter(r=>r.id!==id);
+  save('bake_log',logs);
+  renderBakeLog();
+}
+
+function renderStarterStatus() {
+  const s=getState('starter',{lastFed:'',notes:''});
+  const el=document.getElementById('starter-status');
+  if(!s.lastFed){ el.textContent='Starter: not tracked'; return; }
+  const fed=new Date(s.lastFed); const now=new Date();
+  const daysSince=Math.floor((now-fed)/(1000*60*60*24));
+  el.textContent=`Starter: fed ${daysSince===0?'today':`${daysSince}d ago`}`;
+  el.className=`badge ${daysSince>2?'badge-warm':'badge-accent'}`;
+}
+
+function showStarterModal() {
+  const modal=document.getElementById('starter-modal');
+  modal.style.display=modal.style.display==='none'?'block':'none';
+  if(modal.style.display==='block') {
+    const s=getState('starter',{lastFed:'',notes:''});
+    document.getElementById('starter-last-fed').value=s.lastFed||'';
+    document.getElementById('starter-notes').value=s.notes||'';
+    calcNextFeed();
+  }
+}
+function closeStarterModal() { document.getElementById('starter-modal').style.display='none'; }
+function saveStarter() {
+  save('starter',{
+    lastFed:document.getElementById('starter-last-fed').value,
+    notes:document.getElementById('starter-notes').value
+  });
+  calcNextFeed();
+  renderStarterStatus();
+  toast('Starter updated.');
+}
+function calcNextFeed() {
+  const val=document.getElementById('starter-last-fed').value;
+  const el=document.getElementById('starter-next-feed');
+  if(!val){ el.textContent='—'; return; }
+  const next=new Date(val); next.setDate(next.getDate()+2);
+  el.textContent=next.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+  const days=daysUntil(next.toISOString().slice(0,10));
+  el.style.color=days<=0?'var(--intensity)':'var(--text)';
+}
+
+// ════════════════════════════════════════════════════
+//  TAB 5 — LIFE & FAMILY
+// ════════════════════════════════════════════════════
+function renderLife() {
+  const goalsData=getState('goal_areas',{});
+  const ga=document.getElementById('goal-areas');
+  ga.innerHTML=GOAL_AREAS_DEF.map(area=>{
+    const data=goalsData[area.id]||{focus:area.focus,notes:''};
+    return `<div class="goal-area mb-1" style="border-left-color:${area.color}">
+      <div class="goal-area-title">${area.title}</div>
+      <div class="section-label">Current Focus</div>
+      <input value="${data.focus||''}" onchange="saveGoalArea('${area.id}','focus',this.value)" style="margin-bottom:.5rem">
+      <div class="section-label">Notes</div>
+      <textarea rows="2" onchange="saveGoalArea('${area.id}','notes',this.value)" placeholder="Weekly actions, progress...">${data.notes||''}</textarea>
+    </div>`;
+  }).join('');
+
+  renderRecurring();
+}
+function saveGoalArea(id, field, val) {
+  const data=getState('goal_areas',{});
+  if(!data[id]) data[id]={};
+  data[id][field]=val;
+  save('goal_areas',data);
+}
+
+function renderRecurring() {
+  const tasks=getState('recurring_tasks', RECURRING_DEFAULT);
+  const el=document.getElementById('recurring-tasks');
+  const freqColor={daily:'var(--zone2)',weekly:'var(--strength)',monthly:'var(--warm)'};
+  el.innerHTML=tasks.map(t=>`
+    <div class="check-item">
+      <input type="checkbox" id="rt_${t.id}" ${t.done?'checked':''} onchange="toggleRecurring('${t.id}',this.checked)">
+      <label for="rt_${t.id}" style="${t.done?'text-decoration:line-through;color:var(--text-3)':''}"> ${t.text}</label>
+      <span style="font-size:.68rem;font-weight:600;text-transform:uppercase;color:${freqColor[t.freq]||'var(--text-3)'};margin-left:auto;white-space:nowrap">${t.freq}</span>
+    </div>`).join('')||'<div class="empty">No tasks yet.</div>';
+  el.innerHTML+=`<div class="add-row mt-2">
+    <input id="new-recurring-text" placeholder="New task...">
+    <select id="new-recurring-freq" style="width:auto;flex-shrink:0">
+      <option value="daily">Daily</option><option value="weekly" selected>Weekly</option><option value="monthly">Monthly</option>
+    </select>
+    <button class="btn btn-primary btn-sm" onclick="addRecurringTask()">+</button>
+  </div>`;
+}
+function toggleRecurring(id, checked) {
+  const tasks=getState('recurring_tasks', RECURRING_DEFAULT);
+  const t=tasks.find(t=>t.id===id); if(t) t.done=checked;
+  save('recurring_tasks',tasks);
+  renderRecurring();
+}
+function addRecurringTask() {
+  const inp=document.getElementById('new-recurring-text');
+  const freq=document.getElementById('new-recurring-freq');
+  if(!inp||!inp.value.trim()) return;
+  const tasks=getState('recurring_tasks', RECURRING_DEFAULT);
+  tasks.push({id:uid(),text:inp.value.trim(),freq:freq.value,done:false});
+  save('recurring_tasks',tasks);
+  renderRecurring();
+  toast('Task added.');
+}
+
+// ════════════════════════════════════════════════════
+//  TAB 6 — WEEKLY REVIEW
+// ════════════════════════════════════════════════════
+function renderReview() {
+  renderPastReviews();
+}
+
+function saveReview() {
+  const review={
+    date:today(),
+    saved:new Date().toISOString(),
+    trainingWins:document.getElementById('rv-training-wins').value,
+    trainingMisses:document.getElementById('rv-training-misses').value,
+    bakery:document.getElementById('rv-bakery').value,
+    family:document.getElementById('rv-family').value,
+    carry:document.getElementById('rv-carry').value,
+  };
+  const reviews=getState('weekly_reviews',[]);
+  const existing=reviews.findIndex(r=>r.date===today());
+  if(existing>=0) reviews[existing]=review;
+  else reviews.unshift(review);
+  save('weekly_reviews',reviews);
+  renderPastReviews();
+  toast('Review saved.');
+}
+
+function renderPastReviews() {
+  const reviews=getState('weekly_reviews',[]);
+  const el=document.getElementById('past-reviews');
+  if(!reviews.length){ el.innerHTML='<div class="empty">No reviews yet — save your first one.</div>'; return; }
+  el.innerHTML=reviews.map(r=>`
+    <div class="review-entry">
+      <div class="review-entry-header">
+        <span class="review-entry-date">${r.date}</span>
+        <button class="btn btn-danger btn-sm" onclick="deleteReview('${r.date}')">Delete</button>
+      </div>
+      ${r.trainingWins?`<div class="mb-1"><div class="section-label">Training Wins</div><div class="text-sm" style="color:var(--text-2)">${r.trainingWins}</div></div>`:''}
+      ${r.carry?`<div><div class="section-label">Carrying Forward</div><div class="text-sm" style="color:var(--accent);font-style:italic">${r.carry}</div></div>`:''}
+    </div>`).join('');
+}
+function deleteReview(date) {
+  const reviews=getState('weekly_reviews',[]).filter(r=>r.date!==date);
+  save('weekly_reviews',reviews);
+  renderPastReviews();
+  toast('Review deleted.');
+}
+
+// ════════════════════════════════════════════════════
+//  MODAL
+// ════════════════════════════════════════════════════
+function showModal(html) {
+  document.getElementById('modal-content').innerHTML=html;
+  const ov=document.getElementById('modal-overlay');
+  ov.style.display='flex';
+  ov.onclick=e=>{ if(e.target===ov) closeModal(); };
+}
+function closeModal() { document.getElementById('modal-overlay').style.display='none'; }
+
+// ════════════════════════════════════════════════════
+//  THEME + EXPORT
+// ════════════════════════════════════════════════════
+function toggleTheme() {
+  const cur=document.documentElement.dataset.theme;
+  const next=cur==='dark'?'light':'dark';
+  document.documentElement.dataset.theme=next;
+  save('theme',next);
+}
+
+function exportData() {
+  const keys=Object.keys(localStorage).filter(k=>k.startsWith('bfbhq_'));
+  const data={exported:new Date().toISOString()};
+  keys.forEach(k=>{ try{ data[k.replace('bfbhq_','')]=JSON.parse(localStorage.getItem(k)); }catch{} });
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`bfbhq-backup-${today()}.json`;
+  a.click();
+  toast('Data exported.');
+}
+
+// ════════════════════════════════════════════════════
+//  PASSWORD GATE
+// ════════════════════════════════════════════════════
+
+const PW_SESSION_KEY = '__bfbhq_auth';
+const PW_STORE_KEY   = '__bfbhq_pw';
+
+function initPasswordGate() {
+  const gate = document.getElementById('pw-gate');
+  // If no password has been set yet, skip the gate entirely (first run)
+  const stored = localStorage.getItem(PW_STORE_KEY);
+  if(!stored) { gate.style.display = 'none'; return; }
+  // If already authenticated this session, skip
+  if(sessionStorage.getItem(PW_SESSION_KEY) === 'yes') { gate.style.display = 'none'; return; }
+  // Show gate
+  gate.style.display = 'flex';
+  document.getElementById('nav').style.display = 'none';
+  document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+  setTimeout(() => document.getElementById('pw-input').focus(), 100);
+}
+
+function checkPassword() {
+  const input   = document.getElementById('pw-input').value;
+  const stored  = localStorage.getItem(PW_STORE_KEY);
+  // Simple SHA-256-free compare: store a hashed version using btoa for basic obfuscation
+  if(btoa(input) === stored) {
+    sessionStorage.setItem(PW_SESSION_KEY, 'yes');
+    document.getElementById('pw-gate').style.display = 'none';
+    document.getElementById('nav').style.display = '';
+    document.querySelectorAll('.tab-panel').forEach(p => p.style.display = '');
+    renderToday();
+  } else {
+    document.getElementById('pw-error').textContent = 'Wrong password.';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+  }
+}
+
+function setDashboardPassword(newPw) {
+  if(!newPw) { localStorage.removeItem(PW_STORE_KEY); return; }
+  localStorage.setItem(PW_STORE_KEY, btoa(newPw));
+  toast('Password updated. Takes effect on next visit.');
+}
+
+// ════════════════════════════════════════════════════
+//  GIST SYNC ENGINE
+// ════════════════════════════════════════════════════
+
+const GIST_FILE = 'bfbhq-data.json';
+// PAT + Gist ID are stored under these special keys (not prefixed with bfbhq_
+// so they are excluded from the data payload pushed to the Gist).
+const PAT_KEY   = '__bfbhq_pat';
+const GIST_KEY  = '__bfbhq_gist';
+
+class GistSync {
+  constructor() {
+    this.pat    = localStorage.getItem(PAT_KEY)  || '';
+    this.gistId = localStorage.getItem(GIST_KEY) || '';
+    this._timer = null;
+    this._status = 'idle';
+  }
+
+  configured() { return !!(this.pat && this.gistId); }
+
+  _headers() {
+    return {
+      'Authorization': `token ${this.pat}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json',
+    };
+  }
+
+  // ── Status indicator ──────────────────────────────
+  setStatus(s, msg) {
+    this._status = s;
+    const dot   = document.getElementById('sync-dot');
+    const label = document.getElementById('sync-label');
+    const colors = {
+      idle:    'var(--border)',
+      syncing: 'var(--cycling)',
+      synced:  'var(--zone2)',
+      error:   'var(--intensity)',
+    };
+    if(dot)   dot.style.background = colors[s] || 'var(--border)';
+    if(label) label.textContent    = msg || s;
+    // Also update the status line inside the settings panel if open
+    const ss = document.getElementById('settings-sync-status');
+    if(ss) ss.textContent = `Status: ${msg || s}`;
+  }
+
+  // ── Collect all app data from localStorage ────────
+  _collect() {
+    const data = {};
+    Object.keys(localStorage)
+      .filter(k => k.startsWith('bfbhq_'))
+      .forEach(k => {
+        try { data[k] = JSON.parse(localStorage.getItem(k)); }
+        catch { data[k] = localStorage.getItem(k); }
+      });
+    data._syncedAt = new Date().toISOString();
+    return data;
+  }
+
+  // ── Write Gist data into localStorage ────────────
+  _apply(data) {
+    Object.entries(data).forEach(([k, v]) => {
+      if(!k.startsWith('bfbhq_')) return;  // skip metadata fields
+      try { localStorage.setItem(k, JSON.stringify(v)); } catch {}
+    });
+  }
+
+  // ── PULL: Gist → localStorage ─────────────────────
+  async pull() {
+    if(!this.configured()) return false;
+    this.setStatus('syncing', 'pulling…');
+    try {
+      const res = await fetch(`https://api.github.com/gists/${this.gistId}`, {
+        headers: this._headers(),
+      });
+      if(res.status === 401) throw new Error('Bad token — check your PAT');
+      if(res.status === 404) throw new Error('Gist not found — check the Gist ID');
+      if(!res.ok)            throw new Error(`GitHub returned ${res.status}`);
+
+      const json = await res.json();
+      const file = json.files[GIST_FILE];
+      if(!file) throw new Error(`File "${GIST_FILE}" not found in this Gist`);
+
+      const data = JSON.parse(file.content);
+      this._apply(data);
+      const ts = data._syncedAt ? new Date(data._syncedAt).toLocaleTimeString() : '—';
+      this.setStatus('synced', `synced · ${ts}`);
+      return true;
+    } catch(e) {
+      console.warn('[GistSync] pull failed:', e.message);
+      this.setStatus('error', `pull error: ${e.message}`);
+      return false;
+    }
+  }
+
+  // ── PUSH: localStorage → Gist ─────────────────────
+  async push() {
+    if(!this.configured()) return false;
+    this.setStatus('syncing', 'saving…');
+    try {
+      const payload = this._collect();
+      const res = await fetch(`https://api.github.com/gists/${this.gistId}`, {
+        method: 'PATCH',
+        headers: this._headers(),
+        body: JSON.stringify({
+          files: { [GIST_FILE]: { content: JSON.stringify(payload, null, 2) } },
+        }),
+      });
+      if(res.status === 401) throw new Error('Bad token');
+      if(res.status === 404) throw new Error('Gist not found');
+      if(!res.ok)            throw new Error(`GitHub returned ${res.status}`);
+
+      const ts = new Date().toLocaleTimeString();
+      this.setStatus('synced', `saved · ${ts}`);
+      setTimeout(() => { if(this._status === 'synced') this.setStatus('idle', 'in sync'); }, 4000);
+      return true;
+    } catch(e) {
+      console.warn('[GistSync] push failed:', e.message);
+      this.setStatus('error', `save error: ${e.message}`);
+      return false;
+    }
+  }
+
+  // ── Debounced push (called by save()) ─────────────
+  debouncedPush() {
+    clearTimeout(this._timer);
+    this.setStatus('syncing', 'pending…');
+    this._timer = setTimeout(() => this.push(), 3000);
+  }
+
+  // ── Create a brand-new private Gist ──────────────
+  async createGist(pat) {
+    const res = await fetch('https://api.github.com/gists', {
+      method: 'POST',
+      headers: {
+        'Authorization': `token ${pat}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        description: 'BFB HQ — Dashboard Data (do not delete)',
+        public: false,
+        files: { [GIST_FILE]: { content: JSON.stringify({ _created: new Date().toISOString() }, null, 2) } },
+      }),
+    });
+    if(res.status === 401) throw new Error('Invalid token — make sure it has the "gist" scope');
+    if(!res.ok)            throw new Error(`GitHub returned ${res.status}`);
+    const json = await res.json();
+    return json.id;
+  }
+
+  // ── Persist credentials ───────────────────────────
+  configure(pat, gistId) {
+    this.pat    = pat;
+    this.gistId = gistId;
+    localStorage.setItem(PAT_KEY,  pat);
+    localStorage.setItem(GIST_KEY, gistId);
+  }
+
+  clear() {
+    this.pat = ''; this.gistId = '';
+    localStorage.removeItem(PAT_KEY);
+    localStorage.removeItem(GIST_KEY);
+    this.setStatus('idle', 'not synced');
+  }
+}
+
+// ════════════════════════════════════════════════════
+//  SETTINGS PANEL FUNCTIONS
+// ════════════════════════════════════════════════════
+
+function openSettings() {
+  const ov = document.getElementById('settings-overlay');
+  ov.style.display = 'block';
+  // Pre-fill fields with stored values
+  document.getElementById('settings-pat').value     = localStorage.getItem(PAT_KEY)  || '';
+  document.getElementById('settings-gist-id').value = localStorage.getItem(GIST_KEY) || '';
+  document.getElementById('pat-status').textContent  = '';
+  document.getElementById('gist-status').textContent = '';
+  const ss = document.getElementById('settings-sync-status');
+  if(ss) ss.textContent = window.gistSync.configured()
+    ? `Connected — Gist ID: ${window.gistSync.gistId}`
+    : 'Not configured — follow the steps above to connect.';
+}
+
+function closeSettings(e) {
+  if(e && e.target !== document.getElementById('settings-overlay')) return;
+  document.getElementById('settings-overlay').style.display = 'none';
+}
+
+async function saveSettings() {
+  const pat    = document.getElementById('settings-pat').value.trim();
+  const gistId = document.getElementById('settings-gist-id').value.trim();
+  const status = document.getElementById('gist-status');
+
+  if(!pat)    { document.getElementById('pat-status').textContent  = 'Please enter your Personal Access Token.'; return; }
+  if(!gistId) { status.textContent = 'Please enter a Gist ID, or click "Create new" to make one.'; return; }
+
+  status.textContent = 'Testing connection…';
+  window.gistSync.configure(pat, gistId);
+
+  // Test by pulling — if it succeeds, we're good
+  const ok = await window.gistSync.pull();
+  if(ok) {
+    status.textContent = 'Connected! Data pulled from Gist.';
+    status.style.color = 'var(--zone2)';
+    toast('Sync connected. Data pulled from Gist.');
+    renderTab(activeTab);   // refresh UI with any newly pulled data
+    setTimeout(() => closeSettings(), 1200);
+  } else {
+    status.textContent = 'Connection failed — check your token and Gist ID.';
+    status.style.color = 'var(--intensity)';
+  }
+}
+
+async function createGistFromSettings() {
+  const pat = document.getElementById('settings-pat').value.trim();
+  const btn = document.querySelector('#settings-panel button[onclick="createGistFromSettings()"]');
+  const status = document.getElementById('gist-status');
+  if(!pat) { document.getElementById('pat-status').textContent = 'Enter your token first.'; return; }
+
+  status.textContent  = 'Creating Gist…';
+  if(btn) btn.disabled = true;
+  try {
+    const id = await window.gistSync.createGist(pat);
+    document.getElementById('settings-gist-id').value = id;
+    status.textContent  = `Gist created! ID: ${id}`;
+    status.style.color  = 'var(--zone2)';
+    // Now push current local data up immediately
+    window.gistSync.configure(pat, id);
+    await window.gistSync.push();
+    toast('Gist created and local data uploaded.');
+  } catch(e) {
+    status.textContent = `Failed: ${e.message}`;
+    status.style.color = 'var(--intensity)';
+  } finally {
+    if(btn) btn.disabled = false;
+  }
+}
+
+async function manualPush() {
+  const ok = await window.gistSync.push();
+  toast(ok ? 'Local data pushed to Gist.' : 'Push failed — check sync settings.');
+}
+
+async function manualPull() {
+  const ok = await window.gistSync.pull();
+  if(ok) { renderTab(activeTab); toast('Data pulled from Gist.'); }
+  else   { toast('Pull failed — check sync settings.'); }
+}
+
+function clearSyncSettings() {
+  if(!confirm('Disconnect sync? Your local data will not be affected.')) return;
+  window.gistSync.clear();
+  openSettings();   // re-open to show disconnected state
+  toast('Sync disconnected.');
+}
+
+// ════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════
+(function init() {
+  // Restore theme
+  const theme = load('theme');
+  if(theme) document.documentElement.dataset.theme = theme;
+
+  // Password gate — must run before anything renders
+  initPasswordGate();
+
+  // Boot GistSync — shared instance used throughout the app
+  window.gistSync = new GistSync();
+
+  // Pull from Gist on first load (non-blocking — UI renders immediately from localStorage)
+  if(window.gistSync.configured()) {
+    window.gistSync.setStatus('syncing', 'pulling…');
+    window.gistSync.pull().then(ok => {
+      if(ok) renderTab(activeTab);   // refresh with any changes from other devices
+    });
+  } else {
+    window.gistSync.setStatus('idle', 'not synced');
+  }
+
+  // Render initial tab
+  renderToday();
+})();
+</script>
+</body>
+</html>
